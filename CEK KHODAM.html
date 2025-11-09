@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Website Cek Khodam - Temukan khodam simbolikmu dengan cara menyenangkan.">
+  <meta property="og:title" content="Cek Khodam Online">
+  <meta property="og:description" content="Temukan khodam simbolikmu hanya dengan satu klik.">
+  <title>Cek Khodam</title>
+  <style>
+    /* -----------------------
+       CSS Inline - Simple & Responsive
+       ----------------------- */
+    :root{
+      --bg1: linear-gradient(135deg,#0f172a 0%,#2b0f3a 60%,#b58b3a 100%);
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.04);
+      --accent: #d6b24b;
+      --text: #e6eef8;
+      --muted: #cbd5e1;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:var(--bg1);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.45;padding:32px}
+    main{max-width:920px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .title{display:flex;flex-direction:column}
+    h1{margin:0;font-size:28px}
+    p.lead{margin:6px 0 18px;color:var(--muted)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));backdrop-filter:blur(6px);border-radius:12px;padding:18px;box-shadow:0 6px 24px rgba(2,6,23,0.6);}
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+    input[type=text],input[type=number],input[type=date],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+    textarea{min-height:90px;resize:vertical}
+    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:#111;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.07)}
+    .result{margin-top:18px}
+    .result-card{display:flex;gap:12px;align-items:center;padding:14px;border-radius:10px;background:var(--card)}
+    .icon{font-size:40px}
+    .meta{flex:1}
+    .score{font-weight:800;font-size:22px;color:var(--accent)}
+    .muted{color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:8px;margin-top:8px}
+    .fade-in{animation:fade 0.55s ease both}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    footer{margin-top:22px;color:var(--muted);font-size:13px}
+    /* small screens */
+    @media (max-width:640px){
+      form .row{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start}
+    }
+    /* Dark mode class toggled on body */
+    body.dark-mode{--bg1:linear-gradient(135deg,#050505 0%,#0b1020 80%);--card:rgba(255,255,255,0.02);--glass:rgba(255,255,255,0.02);--accent:#f3d877;--text:#eef3ff;--muted:#b8c2d6}
+    .error{color:#ffb3b3;font-size:13px;margin-top:6px}
+    .howto{margin-top:14px;padding:12px;border-radius:8px;background:rgba(0,0,0,0.18);font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="title">
+        <h1>🔮 Cek Khodam</h1>
+        <p class="lead">Temukan khodam penjaga spiritualmu secara simbolik — untuk hiburan dan refleksi.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="themeToggle" class="ghost" aria-pressed="false" title="Toggle tema">🌗 Mode</button>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="form-title" style="margin-top:16px">
+      <h2 id="form-title" style="margin:0 0 8px 0">Form Cek Khodam</h2>
+      <form id="cekForm" autocomplete="off">
+        <div class="row">
+          <div>
+            <label for="nama">Nama Lengkap</label>
+            <input id="nama" name="nama" type="text" required />
+            <div id="err-nama" class="error" aria-live="polite" hidden></div>
+          </div>
+          <div>
+            <label for="umur">Umur</label>
+            <input id="umur" name="umur" type="number" min="1" required />
+            <div id="err-umur" class="error" aria-live="polite" hidden></div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Jenis Kelamin</label>
+            <div style="display:flex;gap:8px">
+              <label><input type="radio" name="gender" value="L" required /> Laki-laki</label>
+              <label><input type="radio" name="gender" value="P" /> Perempuan</label>
+            </div>
+            <div id="err-gender" class="error" aria-live="polite" hidden></div>
+          </div>
+          <div>
+            <label for="dob">Tanggal Lahir</label>
+            <input id="dob" name="dob" type="date" required />
+            <div id="err-dob" class="error" aria-live="polite" hidden></div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="kota">Kota Asal</label>
+          <input id="kota" name="kota" type="text" required />
+          <div id="err-kota" class="error" aria-live="polite" hidden></div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="niat">Niat / Cerita singkat</label>
+          <textarea id="niat" name="niat" placeholder="Kenapa Anda ingin cek khodam?" required></textarea>
+          <div id="err-niat" class="error" aria-live="polite" hidden></div>
+        </div>
+
+        <div class="actions">
+          <button id="btnCheck" type="submit">🔍 Periksa Khodam</button>
+          <button id="btnReset" type="button" class="ghost">🔄 Reset Form</button>
+          <button id="btnCopy" type="button" class="ghost">📋 Salin Hasil</button>
+          <button id="btnDownload" type="button" class="ghost">💾 Unduh Hasil</button>
+        </div>
+      </form>
+
+      <div class="result" id="resultArea" aria-live="polite" style="display:none">
+        <!-- Hasil akan dimasukkan lewat JS -->
+      </div>
+
+      <div class="howto">
+        <strong>@JUNZZEZZ</strong>
+        <p style="margin:6px 0 0 0">ALL RIGHT RESERVED 2025 
+      </div>
+    </section>
+
+    <footer>
+      Website ini bersifat hiburan, jangan dibawa ke hati ya gesss
+    </footer>
+  </main>
+
+  <script>
+    // -------------------------
+    // Data Khodam (contoh)
+    // -------------------------
+    const khodamList = [
+      { name: "Khodam Penjaga Bumi", element: "Tanah", desc: "Melambangkan keteguhan dan perlindungan kuat.", advice: "Tetaplah kokoh menjaga prinsip dan keseimbangan.", icon: "🪶" },
+      { name: "Khodam Air Murni", element: "Air", desc: "Merefleksikan ketenangan dan kejernihan hati.", advice: "Belajarlah memahami sebelum menilai.", icon: "💧" },
+      { name: "Khodam Api Abadi", element: "Api", desc: "Energi kuat penuh semangat dan keberanian.", advice: "Gunakan keberanianmu untuk menyalakan kebaikan.", icon: "🔥" },
+      { name: "Khodam Angin Lembut", element: "Udara", desc: "Menyimbolkan kebebasan dan inspirasi.", advice: "Jangan terlalu menahan sesuatu, biarkan mengalir.", icon: "🌬️" },
+      { name: "Khodam Cahaya Suci", element: "Cahaya", desc: "Pembawa harapan dan kejernihan batin.", advice: "Teruslah bersinar meski dalam kegelapan.", icon: "✨" },
+      { name: "Khodam Bayangan Sunyi", element: "Bayangan", desc: "Merepresentasikan introspeksi dan kekuatan tersembunyi.", advice: "Kenali sisi gelapmu agar tak dikuasainya.", icon: "🌑" },
+      { name: "Khodam Awan Langit", element: "Aether", desc: "Penjelajah batas antara dunia dan imajinasi.", advice: "Gunakan daya khayalmu untuk mencipta, bukan melarikan diri.", icon: "☁️" },
+      { name: "Khodam Hutan Senja", element: "Kayu", desc: "Penyeimbang alam dan penjaga kedamaian batin.", advice: "Hiduplah selaras dengan lingkunganmu.", icon: "🌲" }
+    ];
+
+    // -------------------------
+    // Helper: acak khodam lokal
+    // -------------------------
+    function acakKhodam() {
+      const i = Math.floor(Math.random() * khodamList.length);
+      const kh = khodamList[i];
+      const score = Math.floor(Math.random() * 41) + 60; // 60..100
+      return Object.assign({}, kh, { score });
+    }
+
+    // -------------------------
+    // TODO: Integrasi Enzostvs - placeholder
+    // Ganti implementasi ini dengan panggilan API async jika diperlukan
+    // Contoh: return fetch('https://api.enzostvs/cek',{method:'POST',body:JSON.stringify(payload)})
+    // -------------------------
+    async function callEngine(payload) {
+      // untuk saat ini gunakan acak lokal agar UI siap dipakai tanpa backend
+      await new Promise(r=>setTimeout(r,220)); // simulasi latency kecil
+      return { status: 'success', ...acakKhodam() };
+    }
+
+    // -------------------------
+    // Play short beep (WebAudio) => menggantikan kebutuhan base64 audio
+    // -------------------------
+    function playBeep(){
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = 880;
+        g.gain.value = 0.02;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        setTimeout(()=>{ o.stop(); ctx.close(); },120);
+      }catch(e){/* ignore on unsupported */}
+    }
+
+    // -------------------------
+    // DOM & Events
+    // -------------------------
+    const form = document.getElementById('cekForm');
+    const resultArea = document.getElementById('resultArea');
+    const btnCopy = document.getElementById('btnCopy');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnReset = document.getElementById('btnReset');
+    const themeToggle = document.getElementById('themeToggle');
+
+    function clearErrors(){
+      ['nama','umur','gender','dob','kota','niat'].forEach(id=>{
+        const el = document.getElementById('err-'+id);
+        if(el){ el.hidden=true; el.textContent=''; }
+      });
+    }
+
+    function validateForm(data){
+      clearErrors();
+      let ok=true;
+      if(!data.nama || data.nama.trim().length<2){ document.getElementById('err-nama').hidden=false; document.getElementById('err-nama').textContent='Nama minimal 2 karakter'; ok=false }
+      if(!data.umur || data.umur<1){ document.getElementById('err-umur').hidden=false; document.getElementById('err-umur').textContent='Masukkan umur valid'; ok=false }
+      if(!data.gender){ document.getElementById('err-gender').hidden=false; document.getElementById('err-gender').textContent='Pilih jenis kelamin'; ok=false }
+      if(!data.dob){ document.getElementById('err-dob').hidden=false; document.getElementById('err-dob').textContent='Pilih tanggal lahir'; ok=false }
+      if(!data.kota || data.kota.trim().length<2){ document.getElementById('err-kota').hidden=false; document.getElementById('err-kota').textContent='Masukkan kota asal'; ok=false }
+      if(!data.niat || data.niat.trim().length<6){ document.getElementById('err-niat').hidden=false; document.getElementById('err-niat').textContent='Tulis niat sedikitnya 6 karakter'; ok=false }
+      return ok;
+    }
+
+    function renderResult(user, engineResult){
+      const html = `
+        <article class="result-card fade-in" role="status">
+          <div class="icon" aria-hidden="true">${engineResult.icon}</div>
+          <div class="meta">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+              <div>
+                <div style="font-weight:700">${engineResult.name}</div>
+                <div class="muted">Elemen: ${engineResult.element}</div>
+              </div>
+              <div class="score">${engineResult.score}%</div>
+            </div>
+
+            <p style="margin:8px 0 6px 0">${engineResult.desc}</p>
+            <p style="margin:0 0 6px 0;color:var(--muted)"><strong>Nasihat:</strong> ${engineResult.advice}</p>
+            <div class="muted">Hasil untuk: <strong>${user.nama}</strong>, ${user.umur} tahun — ${user.kota}</div>
+            <div class="controls">
+              <button id="shareCopy" class="ghost">📋 Salin</button>
+              <button id="shareDownload" class="ghost">💾 Unduh</button>
+            </div>
+          </div>
+        </article>
+      `;
+      resultArea.innerHTML = html;
+      resultArea.style.display = 'block';
+      playBeep();
+
+      // hook button events inside the result
+      document.getElementById('shareCopy').addEventListener('click',()=>{ copyToClipboard(formatResultText(user,engineResult)) });
+      document.getElementById('shareDownload').addEventListener('click',()=>{ downloadTextFile(user.nama+'-khodam.txt', formatResultText(user,engineResult)) });
+      document.querySelector('.result-card').focus();
+    }
+
+    function formatResultText(user, r){
+      return `Hasil Cek Khodam\nNama: ${user.nama}\nUmur: ${user.umur}\nKota: ${user.kota}\nKhodam: ${r.name} (${r.element})\nSkor: ${r.score}%\nDeskripsi: ${r.desc}\nNasihat: ${r.advice}\n\n(Niat: ${user.niat})`;
+    }
+
+    function copyToClipboard(text){
+      if(!navigator.clipboard){
+        // fallback
+        const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy')}catch(e){} ta.remove();
+        alert('Hasil disalin ke clipboard');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(()=>{ alert('Hasil disalin ke clipboard'); }).catch(()=>{ alert('Gagal salin'); });
+    }
+
+    function downloadTextFile(filename, text){
+      const a = document.createElement('a');
+      const blob = new Blob([text],{type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // global copy/download buttons (will act on last result if exists)
+    btnCopy.addEventListener('click',()=>{
+      const last = resultArea.querySelector('.result-card');
+      if(!last){ alert('Belum ada hasil untuk disalin'); return }
+      // reconstruct minimal data from DOM (we could keep lastResult variable instead)
+      // simpler: store lastResult in closure
+      if(window._lastResult){ copyToClipboard(formatResultText(window._lastUser, window._lastResult)) }
+      else alert('Belum ada hasil untuk disalin');
+    });
+    btnDownload.addEventListener('click',()=>{
+      if(window._lastResult){ downloadTextFile((window._lastUser?.nama||'hasil')+'-khodam.txt', formatResultText(window._lastUser, window._lastResult)) }
+      else alert('Belum ada hasil untuk diunduh');
+    });
+
+    btnReset.addEventListener('click',()=>{ form.reset(); resultArea.style.display='none'; clearErrors(); window._lastResult=null; window._lastUser=null });
+
+    themeToggle.addEventListener('click',()=>{
+      const now = document.body.classList.toggle('dark-mode');
+      themeToggle.setAttribute('aria-pressed', now? 'true':'false');
+      themeToggle.textContent = now? '🌞 Terang':'🌙 Gelap';
+    });
+
+    form.addEventListener('submit', async (ev)=>{
+      ev.preventDefault();
+      const data = new FormData(form);
+      const payload = {
+        nama: (data.get('nama')||'').trim(),
+        umur: Number(data.get('umur'))||0,
+        gender: data.get('gender'),
+        dob: data.get('dob'),
+        kota: (data.get('kota')||'').trim(),
+        niat: (data.get('niat')||'').trim()
+      };
+      if(!validateForm(payload)) return;
+
+      // indikasi loading kecil
+      btnCheckDisabled(true);
+      try{
+        const res = await callEngine(payload); // async placeholder
+        // res is expected to contain fields: name, element, desc, advice, score, icon
+        const engineResult = {
+          name: res.name || res.khodam?.name || 'Khodam Rahasia',
+          element: res.element || res.khodam?.element || 'Misteri',
+          desc: res.desc || res.khodam?.desc || 'Deskripsi tidak tersedia.',
+          advice: res.advice || res.khodam?.advice || 'Tidak ada saran khusus.',
+          score: res.score ?? (Math.floor(Math.random()*41)+60),
+          icon: res.icon || (res.khodam?.icon) || (khodamList[Math.floor(Math.random()*khodamList.length)].icon)
+        };
+
+        window._lastResult = engineResult; window._lastUser = payload;
+        renderResult(payload, engineResult);
+      }catch(err){
+        alert('Terjadi kesalahan saat memproses. Coba lagi.');
+      }finally{ btnCheckDisabled(false); }
+    });
+
+    function btnCheckDisabled(dis){
+      const b = document.getElementById('btnCheck');
+      b.disabled = dis; b.style.opacity = dis?0.6:1; b.style.pointerEvents = dis? 'none':'auto';
+    }
+
+    // expose some helpers for developer ease
+    window._dev = { acakKhodam, callEngine };
+
+    // small accessibility: focus result when it's added
+  </script>
+</body>
+</html>
